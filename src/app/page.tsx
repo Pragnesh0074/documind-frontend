@@ -46,7 +46,8 @@ export default function Home() {
 
       if (response.ok) {
         setPdfUploaded(true);
-        setMessages([...messages, { role: 'bot', content: `Success! I've analyzed **${file.name}**. You can now ask questions about its content.` }]);
+        // Clear previous chat and show only the new success message
+        setMessages([{ role: 'bot', content: `Success! I've analyzed ${file.name}. You can now ask questions about its content.` }]);
       } else {
         alert('Upload failed. Please ensure the backend is running.');
       }
@@ -56,6 +57,12 @@ export default function Home() {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const handleRemoveFile = () => {
+    setPdfUploaded(false);
+    setFileName('');
+    setMessages([{ role: 'bot', content: 'Welcome to DocuMind. Upload a PDF to start our conversation.' }]);
   };
 
   const handleSendMessage = async () => {
@@ -79,7 +86,7 @@ export default function Home() {
       } else {
         setMessages(prev => [...prev, { role: 'bot', content: 'I encountered an error. Please try rephrasing.' }]);
       }
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { role: 'bot', content: 'Backend connection lost.' }]);
     } finally {
       setIsChatting(false);
@@ -88,37 +95,43 @@ export default function Home() {
 
   return (
     <div className="app-wrapper">
-      {/* Premium Sidebar */}
-      <aside className="sidebar">
-        <div style={{ marginBottom: '40px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div style={{ width: '32px', height: '32px', background: 'var(--primary)', borderRadius: '8px' }}></div>
-            <h2 style={{ fontSize: '1.2rem', fontWeight: 700 }}>DocuMind</h2>
-          </div>
-          <p style={{ color: 'var(--text-dim)', fontSize: '0.8rem' }}>AI-Powered RAG System</p>
-        </div>
-
-        <div style={{ flex: 1 }}>
-          <p style={{ fontSize: '0.7rem', textTransform: 'uppercase', color: 'var(--text-dim)', letterSpacing: '0.1em', marginBottom: '16px' }}>Active Document</p>
-          {pdfUploaded ? (
-            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-              <p style={{ fontSize: '0.85rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>📄 {fileName}</p>
-            </div>
-          ) : (
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-dim)', fontStyle: 'italic' }}>No document active</p>
-          )}
-        </div>
-
-        <div style={{ marginTop: 'auto', padding: '16px', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '16px', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
-          <p style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--primary)' }}>Powered by Gemini 1.5</p>
-        </div>
-      </aside>
+      {/* Hidden File Input */}
+      <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".pdf" style={{ display: 'none' }} />
 
       {/* Main Container */}
       <main className="main-chat-container">
         <header className="chat-header">
-          <h1>AI Workspace</h1>
-          {pdfUploaded && <div className="status-badge"><span style={{ width: '6px', height: '6px', background: 'var(--accent)', borderRadius: '50%' }}></span> System Online</div>}
+          <div className="logo-group">
+            <div className="logo-icon"></div>
+            <h1>DocuMind</h1>
+          </div>
+          
+          {pdfUploaded && (
+            <div className="file-controls">
+              <div className="active-file">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span>{fileName}</span>
+              </div>
+              <div className="control-buttons">
+                <button className="control-btn" onClick={() => fileInputRef.current?.click()} title="Change File">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                  </svg>
+                  Change
+                </button>
+                <button className="control-btn danger" onClick={handleRemoveFile} title="Remove File">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+              <div className="status-badge"><span style={{ width: '6px', height: '6px', background: 'var(--accent)', borderRadius: '50%' }}></span> System Online</div>
+            </div>
+          )}
         </header>
 
         <div className="chat-messages">
@@ -175,7 +188,6 @@ export default function Home() {
               <p style={{ color: 'var(--text-dim)', marginBottom: '32px' }}>Upload a PDF to create a localized knowledge base for your AI assistant.</p>
               
               <div className="upload-zone" onClick={() => fileInputRef.current?.click()}>
-                <input type="file" ref={fileInputRef} onChange={handleFileUpload} accept=".pdf" style={{ display: 'none' }} />
                 <p style={{ fontWeight: 600 }}>Click to choose PDF</p>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginTop: '8px' }}>Supports documents up to 50MB</p>
               </div>
@@ -187,7 +199,7 @@ export default function Home() {
           <div className="modal-overlay">
             <div className="upload-glass-card">
               <div className="pulse-icon" style={{ animation: 'none' }}>
-                <div className="dot" style={{ background: 'var(--primary)', width: '12px', height: '12px' }}></div>
+                <div className="dot" style={{ background: 'linear-gradient(to right, #fff, var(--primary))', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}></div>
               </div>
               <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>Processing Knowledge</h2>
               <p style={{ color: 'var(--text-dim)' }}>Chunking text and generating vector embeddings...</p>
