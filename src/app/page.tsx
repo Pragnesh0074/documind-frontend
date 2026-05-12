@@ -162,14 +162,6 @@ export default function Home() {
                 <h2>Chat with your Document</h2>
                 <p>Drop in any PDF — a book, report, contract, or notes — and just ask questions like you&apos;re talking to someone who read it for you.</p>
 
-                {/* Pinned How-it-works */}
-                <div className="pinned-banner">
-                  <span className="pin-icon">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3a2 2 0 0 1 2 2v1l1 1v2h-7v6l1 3H10l1-3v-6H4V7l1-1V5a2 2 0 0 1 2-2h10z"/></svg>
-                  </span>
-                  <span><strong>How it works:</strong> Upload a PDF → DocBot reads it → Ask anything and get instant answers.</span>
-                </div>
-
                 {/* Feature Chips */}
                 <div className="feature-chips">
                   <div className="chip">📄 Any PDF file</div>

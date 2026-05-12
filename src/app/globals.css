@@ -440,12 +440,12 @@ body {
 
 /* Feature Chips */
 .feature-chips {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
-  justify-content: center;
-  max-width: 480px;
+  max-width: 380px;
   width: 100%;
+  margin: 0 auto;
 }
 
 .chip {
@@ -457,6 +457,9 @@ body {
   color: var(--text-dim);
   backdrop-filter: blur(6px);
   transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .chip:hover {
