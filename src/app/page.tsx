@@ -19,7 +19,6 @@ const formatDocName = (name: string) => {
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'bot', content: 'Welcome to DocBot. Upload a PDF to start our conversation.' }
   ]);
   const [input, setInput] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -74,7 +73,7 @@ export default function Home() {
   const handleRemoveFile = () => {
     setPdfUploaded(false);
     setFileName('');
-    setMessages([{ role: 'bot', content: 'Welcome to DocBot. Upload a PDF to start our conversation.' }]);
+    setMessages([]);
   };
 
   const handleSendMessage = async () => {
@@ -147,25 +146,41 @@ export default function Home() {
         </header>
 
         <div className="chat-messages">
-          {messages.map((msg, i) => (
+          {messages.filter(msg => msg.content).map((msg, i) => (
             <div key={i} className={`msg-bubble ${msg.role}`}>
               {msg.content}
             </div>
           ))}
 
-          {/* Upload Card - Integrated into the chat flow when no PDF is uploaded */}
+          {/* Empty State - Clean Centered Layout */}
           {!pdfUploaded && !isUploading && (
             <div className="empty-state-container">
               <div className="upload-glass-card">
                 <div className="pulse-icon">
                   <Image src="/docbot-logo-v2.png" alt="DocBot" width={48} height={48} className="card-logo-img" loading="eager" />
                 </div>
-                <h2>Initialize Chat</h2>
-                <p>Upload a PDF to create a localized knowledge base for your AI assistant.</p>
-                
+                <h2>Chat with your Document</h2>
+                <p>Drop in any PDF — a book, report, contract, or notes — and just ask questions like you&apos;re talking to someone who read it for you.</p>
+
+                {/* Pinned How-it-works */}
+                <div className="pinned-banner">
+                  <span className="pin-icon">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3a2 2 0 0 1 2 2v1l1 1v2h-7v6l1 3H10l1-3v-6H4V7l1-1V5a2 2 0 0 1 2-2h10z"/></svg>
+                  </span>
+                  <span><strong>How it works:</strong> Upload a PDF → DocBot reads it → Ask anything and get instant answers.</span>
+                </div>
+
+                {/* Feature Chips */}
+                <div className="feature-chips">
+                  <div className="chip">📄 Any PDF file</div>
+                  <div className="chip">🧠 Smart answers</div>
+                  <div className="chip">🔒 Private & secure</div>
+                  <div className="chip">⚡ Big books too</div>
+                </div>
+
                 <div className="upload-zone" onClick={() => fileInputRef.current?.click()}>
-                  <p className="upload-text">Click to choose PDF</p>
-                  <p className="upload-subtext">Supports documents up to 50MB</p>
+                  <p className="upload-text">Click here to upload your PDF</p>
+                  <p className="upload-subtext">Works with files up to 50MB</p>
                 </div>
               </div>
             </div>
@@ -179,29 +194,31 @@ export default function Home() {
           <div ref={chatEndRef} />
         </div>
 
-        <div className="chat-input-wrapper">
-          <div className="input-glass">
-            <textarea 
-              placeholder={pdfUploaded ? "Ask a question..." : "Please upload a document first"}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              disabled={!pdfUploaded || isChatting}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSendMessage();
-                }
-              }}
-              rows={1}
-            />
-            <button className="send-action" onClick={handleSendMessage} disabled={!pdfUploaded || isChatting || !input.trim()}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"></line>
-                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-              </svg>
-            </button>
+        {pdfUploaded && (
+          <div className="chat-input-wrapper">
+            <div className="input-glass">
+              <textarea 
+                placeholder="Ask a question..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                disabled={isChatting}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                rows={1}
+              />
+              <button className="send-action" onClick={handleSendMessage} disabled={isChatting || !input.trim()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
           </div>
-        </div>
+        )}
 
         {isUploading && (
           <div className="upload-overlay-loading">
