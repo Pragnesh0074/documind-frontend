@@ -226,8 +226,8 @@ export default function Home() {
               <div className="pulse-icon">
                 <Image src="/docbot-logo-v2.png" alt="Processing" width={40} height={40} className="card-logo-img" />
               </div>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>Processing Knowledge</h2>
-              <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', marginBottom: '16px' }}>Chunking text and generating vector embeddings...</p>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>Reading Document</h2>
+              <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', marginBottom: '16px' }}>DocBot is analyzing the text and learning the details...</p>
               <div className="loading-bar-container">
                 <div className="loading-bar-shimmer"></div>
               </div>
