@@ -8,6 +8,15 @@ interface Message {
   content: string;
 }
 
+const formatDocName = (name: string) => {
+  return name
+    .replace(/\.[^/.]+$/, "") // Remove extension
+    .replace(/[_-]/g, " ")     // Replace _ and - with space
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
     { role: 'bot', content: 'Welcome to DocBot. Upload a PDF to start our conversation.' }
@@ -47,8 +56,10 @@ export default function Home() {
 
       if (response.ok) {
         setPdfUploaded(true);
+        const displayName = formatDocName(file.name);
+        setFileName(displayName);
         // Clear previous chat and show only the new success message
-        setMessages([{ role: 'bot', content: `Success! I've analyzed ${file.name}. You can now ask questions about its content.` }]);
+        setMessages([{ role: 'bot', content: `Success! I've analyzed "${displayName}". You can now ask questions about its content.` }]);
       } else {
         alert('Upload failed. Please ensure the backend is running.');
       }
@@ -194,12 +205,15 @@ export default function Home() {
 
         {isUploading && (
           <div className="upload-overlay-loading">
-            <div className="upload-glass-card">
-              <div className="pulse-icon" style={{ animation: 'none' }}>
-                <div className="dot" style={{ background: 'linear-gradient(to right, #fff, var(--primary))', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}></div>
+            <div className="upload-glass-card" style={{ maxWidth: '320px', textAlign: 'center' }}>
+              <div className="pulse-icon">
+                <Image src="/docbot-logo-v2.png" alt="Processing" width={40} height={40} className="card-logo-img" />
               </div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '8px' }}>Processing Knowledge</h2>
-              <p style={{ color: 'var(--text-dim)' }}>Chunking text and generating vector embeddings...</p>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '8px' }}>Processing Knowledge</h2>
+              <p style={{ color: 'var(--text-dim)', fontSize: '0.9rem', marginBottom: '16px' }}>Chunking text and generating vector embeddings...</p>
+              <div className="loading-bar-container">
+                <div className="loading-bar-shimmer"></div>
+              </div>
             </div>
           </div>
         )}

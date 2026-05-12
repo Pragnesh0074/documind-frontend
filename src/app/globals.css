@@ -454,6 +454,30 @@ body {
   }
 }
 
+.loading-bar-container {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.loading-bar-shimmer {
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  position: absolute;
+  top: 0;
+  left: -50%;
+  animation: shimmer 1.5s infinite linear;
+}
+
+@keyframes shimmer {
+  from { left: -50%; }
+  to { left: 100%; }
+}
+
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
