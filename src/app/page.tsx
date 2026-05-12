@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 interface Message {
   role: 'user' | 'bot';
@@ -9,7 +10,7 @@ interface Message {
 
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'bot', content: 'Welcome to DocuMind. Upload a PDF to start our conversation.' }
+    { role: 'bot', content: 'Welcome to DocBot. Upload a PDF to start our conversation.' }
   ]);
   const [input, setInput] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -62,7 +63,7 @@ export default function Home() {
   const handleRemoveFile = () => {
     setPdfUploaded(false);
     setFileName('');
-    setMessages([{ role: 'bot', content: 'Welcome to DocuMind. Upload a PDF to start our conversation.' }]);
+    setMessages([{ role: 'bot', content: 'Welcome to DocBot. Upload a PDF to start our conversation.' }]);
   };
 
   const handleSendMessage = async () => {
@@ -102,8 +103,8 @@ export default function Home() {
       <main className="main-chat-container">
         <header className="chat-header">
           <div className="logo-group">
-            <div className="logo-icon"></div>
-            <h1>DocuMind</h1>
+            <Image src="/docbot-logo-v2.png" alt="DocBot Logo" width={32} height={32} className="logo-img" priority />
+            <h1>DocBot</h1>
           </div>
           
           {pdfUploaded && (
@@ -140,6 +141,25 @@ export default function Home() {
               {msg.content}
             </div>
           ))}
+
+          {/* Upload Card - Integrated into the chat flow when no PDF is uploaded */}
+          {!pdfUploaded && !isUploading && (
+            <div className="empty-state-container">
+              <div className="upload-glass-card">
+                <div className="pulse-icon">
+                  <Image src="/docbot-logo-v2.png" alt="DocBot" width={48} height={48} className="card-logo-img" loading="eager" />
+                </div>
+                <h2>Initialize Chat</h2>
+                <p>Upload a PDF to create a localized knowledge base for your AI assistant.</p>
+                
+                <div className="upload-zone" onClick={() => fileInputRef.current?.click()}>
+                  <p className="upload-text">Click to choose PDF</p>
+                  <p className="upload-subtext">Supports documents up to 50MB</p>
+                </div>
+              </div>
+            </div>
+          )}
+
           {isChatting && (
             <div className="msg-bubble bot" style={{ display: 'flex', gap: '4px', padding: '12px 20px' }}>
               <div className="dot"></div><div className="dot"></div><div className="dot"></div>
@@ -172,31 +192,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Upload Modal Overlay */}
-        {!pdfUploaded && !isUploading && (
-          <div className="modal-overlay">
-            <div className="upload-glass-card">
-              <div className="pulse-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                  <line x1="12" y1="18" x2="12" y2="12"></line>
-                  <line x1="9" y1="15" x2="15" y2="15"></line>
-                </svg>
-              </div>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '12px' }}>Initialize Chat</h2>
-              <p style={{ color: 'var(--text-dim)', marginBottom: '32px' }}>Upload a PDF to create a localized knowledge base for your AI assistant.</p>
-              
-              <div className="upload-zone" onClick={() => fileInputRef.current?.click()}>
-                <p style={{ fontWeight: 600 }}>Click to choose PDF</p>
-                <p style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginTop: '8px' }}>Supports documents up to 50MB</p>
-              </div>
-            </div>
-          </div>
-        )}
-
         {isUploading && (
-          <div className="modal-overlay">
+          <div className="upload-overlay-loading">
             <div className="upload-glass-card">
               <div className="pulse-icon" style={{ animation: 'none' }}>
                 <div className="dot" style={{ background: 'linear-gradient(to right, #fff, var(--primary))', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}></div>

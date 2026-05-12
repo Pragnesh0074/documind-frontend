@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DocuMind",
+  title: "DocBot",
   description: "AI-Powered RAG System for your PDF documents",
 };
 
