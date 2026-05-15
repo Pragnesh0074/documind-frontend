@@ -2,6 +2,17 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Create your local environment files from the committed examples:
+
+```bash
+cp .env.example .env
+cp .env.development.example .env.development
+cp .env.local.example .env.local
+cp .env.production.example .env.production
+```
+
+For local development, `NEXT_PUBLIC_API_URL` should usually point to the backend API, for example `http://localhost:8000`.
+
 First, run the development server:
 
 ```bash
